@@ -1,6 +1,9 @@
 #include "gates.h"
 #include "raylib.h"
+#include <array>
 #include <iostream>
+#include <memory>
+#include <vector>
 using namespace std;
 
 // define stuff
@@ -13,11 +16,11 @@ using namespace std;
 bool DEBUG = 1;
 
 // main stuff
-unordered_map<int32_t, BaseComponent> circuit;
+unordered_map<int32_t, unique_ptr<BaseComponent>> circuit;
 set<int16_t> components_to_update;
 vector<UpdatePort> ports_to_update;
 
-void DrawComponent(BaseComponent component) {
+void DrawComponent(BaseComponent &component) {
   // TODOO: draw full component - the rectangle based w/ width and height
   // draw the component as a rectangle, with width and height and colour
   // depending on gate type
@@ -29,27 +32,27 @@ void DrawComponent(BaseComponent component) {
   // TODO: draw the ports along with colour
   // draw ports for each component - ins and outs
 
-  // TODO: write the draw-wires code
+  // TODOO: write the draw-wires code
   // just draw the wires
   return;
 };
 
 // code from the chatjimminy :(((((
-void printCircuit(const unordered_map<int32_t, BaseComponent> &circuit) {
+void printCircuit(
+    const unordered_map<int32_t, unique_ptr<BaseComponent>> &circuit) {
   cout << "---------" << endl;
   for (const auto &[key, component] : circuit) {
     cout << "Component ID: " << key << endl;
-    cout << "  Name: " << component.name << endl;
-    cout << "  Position: (" << component.position[0] << ", "
-         << component.position[1] << ")" << endl;
+    cout << "  Name: " << component->name << endl;
+    cout << "  Position: (" << component->position[0] << ", "
+         << component->position[1] << ")" << endl;
     cout << "  Inputs: ";
-    for (const auto &input : component.inputs) {
+    for (const auto &input : component->inputs) {
       cout << static_cast<int>(input) << " ";
     }
     cout << endl;
-
     cout << "  Output Targets: ";
-    for (const auto &target : component.output_targets) {
+    for (const auto &target : component->output_targets) {
       cout << "(" << target[0] << ", " << target[1] << ") ";
     }
     cout << endl;
@@ -69,12 +72,19 @@ int main(int argc, char **argv) {
   } else {
     // TODO: writing fallback circuit
     circuit.insert(
-        {0, InputGate{
-                "input gate 0", {0, 0}, {1, 1, 1}, {{1, 0}, {2, 0}, {-1, 0}}}});
+        {0, make_unique<InputGate>("input", array<int32_t, 2>{0, 0},
+                                   vector<Packet>{1, 1, 1},
+                                   vector<Port>{{1, 0}, {2, 0}, {-1, 0}})});
     circuit.insert(
-        {1, BaseComponent{"negate", {200, 200}, {0, -1}, {{2, 1}, {-1, 2}}}});
-    circuit.insert({2, BaseComponent{"add", {300, 300}, {0, 0}, {{-1, 1}}}});
-    circuit.insert({-1, OutputGate{"output", {700, 400}, {0, 0, 0}, {}}});
+        {1, make_unique<BaseComponent>( "negate", array<int32_t, 2>{200, 200},
+                                       vector<Packet>{0, -1},
+                                       vector<Port>{{2, 1}, {-1, 2}} )});
+    circuit.insert({2, make_unique<BaseComponent>(
+                           "add", array<int32_t, 2>{300, 300},
+                           vector<Packet>{0, 0}, vector<Port>{{-1, 1}})});
+    circuit.insert(
+        {-1, make_unique<OutputGate>("output", array<int32_t, 2>{700, 400},
+                                     vector<Packet>{0, 0, 0}, vector<Port>{})});
     components_to_update.insert(0);
   }
 
@@ -101,12 +111,12 @@ int main(int argc, char **argv) {
           cout << "---------" << endl;
           printf("updating component: %d\n", i);
         }
-        circuit[i].update_outputs();
+        circuit[i]->update_outputs();
       }
       components_to_update.clear();
       for (auto i : ports_to_update) {
         components_to_update.insert(i.port[0]);
-        circuit[i.port[0]].inputs[i.port[1]] = i.value;
+        circuit[i.port[0]]->inputs[i.port[1]] = i.value;
       }
       ports_to_update.clear();
     }
@@ -117,11 +127,11 @@ int main(int argc, char **argv) {
     if (DEBUG) {
       cout << "---------" << endl;
     }
-    for (auto i : circuit) {
+    for (auto &i : circuit) {
       if (DEBUG) {
-        cout << "Drawing component: " << i.second.name << endl;
+        cout << "Drawing component: " << i.second->name << endl;
       }
-      DrawComponent(i.second);
+      DrawComponent(*i.second);
     }
     EndDrawing();
   }

@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
+#include <memory>
 #include <set>
 #include <string>
 #include <unordered_map>
@@ -12,11 +13,14 @@ using namespace std;
 
 typedef array<int16_t, 2> Port;
 typedef int8_t Packet;
-
 struct UpdatePort {
   Port port;
   int8_t value;
 };
+
+// Declare global variables
+extern set<int16_t> components_to_update;
+extern vector<UpdatePort> ports_to_update;
 
 class BaseComponent {
 public:
@@ -34,6 +38,7 @@ public:
   vector<Packet> inputs;
   vector<Port> output_targets;
 
+
   virtual void update_outputs() {
     printf("This is from base component (%s)\n", name.c_str());
     for (size_t i = 0; i < inputs.size(); i++) {
@@ -42,10 +47,6 @@ public:
   }
 };
 
-// Declare global variables
-extern unordered_map<int32_t, BaseComponent> circuit;
-extern set<int16_t> components_to_update;
-extern vector<UpdatePort> ports_to_update;
 
 class InputGate : public BaseComponent {
 public:
@@ -67,7 +68,7 @@ public:
              vector<Packet> inputs = {}, vector<Port> output_targets = {})
       : BaseComponent(name, position, inputs, output_targets) {}
 
-  void update_outputs() override { printf("TODO: OutputGate"); }
+  void update_outputs() override { printf(" TODO: OutputGate"); }
 };
 class NegGate : public BaseComponent {
 public:
@@ -75,5 +76,5 @@ public:
           vector<Packet> inputs = {}, vector<Port> output_targets = {})
       : BaseComponent() {}
 
-  void update_outputs() override { printf("TODO: NegGate"); }
+  void update_outputs() override { printf(" TODO: NegGate"); }
 };

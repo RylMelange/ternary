@@ -1,5 +1,5 @@
 <!-- from https://gist.github.com/gabrieldlima/0bf82c01ce54976ffc6f900639c36f51 -->
- # Nix/NixOS raylib setup
+ # Setup
 
 1. Begin by downloading the latest stable release of raylib into the project folder. Use the following commands:
 ```sh
