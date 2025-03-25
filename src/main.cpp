@@ -1,6 +1,6 @@
 #include "gates.hpp"
 #include "raylib.h"
-#include <cstdio>
+#include <memory>
 using namespace std;
 
 // define stuff
@@ -21,7 +21,7 @@ void DrawComponent(BaseComponent &component) {
   // TODOO: draw full component - the rectangle based w/ width and height
   // draw the component as a rectangle, with width and height and colour
   // depending on gate type
-  array<int32_t, 2> position = component.position;
+  Position position = component.position;
 
   DrawRectangle(component.position[0], component.position[1], 100, 100,
                 RAYWHITE);
@@ -66,21 +66,30 @@ int main(int argc, char **argv) {
     printf("AAAAAAAA what on earth does '%s' mean???\n", command_name);
     return -1;
   } else {
-    // TODO: writing fallback circuit
+    circuit.insert({0, make_unique<InputGate>("input", Position{0, 0},
+                                              vector<Packet>{-1, -1},
+                                              vector<Port>{{1, 0}, {2, 0}})});
+    circuit.insert({1, make_unique<SplitGate>("split1", Position{100, 0},
+                                              vector<Packet>{0},
+                                              vector<Port>{{3, 0}, {4, 0}})});
+    circuit.insert({2, make_unique<SplitGate>("split2", Position{0, 100},
+                                              vector<Packet>{0},
+                                              vector<Port>{{3, 1}, {4, 1}})});
     circuit.insert(
-        {0, make_unique<InputGate>("input", array<int32_t, 2>{0, 0},
-                                   vector<Packet>{1, 1, 1},
-                                   vector<Port>{{1, 0}, {2, 0}, {-1, 0}})});
+        {3, make_unique<MaxGate>("max1", Position{200, 0}, vector<Packet>{0, 0},
+                                 vector<Port>{{5, 0}})});
     circuit.insert(
-        {1, make_unique<NegGate>( "negate", array<int32_t, 2>{200, 200},
-                                       vector<Packet>{0, -1},
-                                       vector<Port>{{2, 1}, {-1, 2}} )});
-    circuit.insert({2, make_unique<AddGate>(
-                           "add", array<int32_t, 2>{300, 300},
-                           vector<Packet>{0, 0}, vector<Port>{{-1, 1}})});
+        {4, make_unique<MinGate>("min1", Position{0, 200}, vector<Packet>{0, 0},
+                                 vector<Port>{{6, 1}})});
     circuit.insert(
-        {-1, make_unique<OutputGate>("output", array<int32_t, 2>{700, 400},
-                                     vector<Packet>{0, 0, 0}, vector<Port>{})});
+        {5, make_unique<NegGate>("neg", Position{200, 200}, vector<Packet>{0},
+                                 vector<Port>{{6, 0}})});
+    circuit.insert(
+        {6, make_unique<MaxGate>("max2", Position{300, 300}, vector<Packet>{0, 0},
+                                 vector<Port>{{-1, 0}})});
+    circuit.insert(
+        {-1, make_unique<OutputGate>("output", Position{700, 400},
+                                     vector<Packet>{0}, vector<Port>{})});
     components_to_update.insert(0);
   }
 
@@ -112,7 +121,7 @@ int main(int argc, char **argv) {
 
       for (auto i : ports_to_update) {
         if (DEBUG) {
-          printf("updating port: %d,%d\n",i.port[0],i.port[1]);
+          printf("updating port: %d,%d\n", i.port[0], i.port[1]);
         }
         components_to_update.insert(i.port[0]);
         circuit[i.port[0]]->inputs[i.port[1]] = i.value;
