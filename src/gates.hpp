@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
+#include <iostream>
 #include <memory>
 #include <set>
 #include <string>
@@ -29,7 +30,6 @@ public:
                 vector<Port> output_targets = {})
       : name(name), position(position), inputs(inputs),
         output_targets(output_targets) {
-    printf("setting up a base component!\n");
   }
 
   string name;
@@ -38,15 +38,12 @@ public:
   vector<Packet> inputs;
   vector<Port> output_targets;
 
-
   virtual void update_outputs() {
-    printf("This is from base component (%s)\n", name.c_str());
     for (size_t i = 0; i < inputs.size(); i++) {
       printf("input %zu is %d\n", i, inputs[i]);
     }
   }
 };
-
 
 class InputGate : public BaseComponent {
 public:
@@ -56,7 +53,6 @@ public:
 
   void update_outputs() override {
     for (size_t i = 0; i < inputs.size(); i++) {
-      printf("updating from InputGate class (%s)\n", name.c_str());
       ports_to_update.push_back({output_targets[i], inputs[i]});
     }
   }
@@ -70,11 +66,21 @@ public:
 
   void update_outputs() override { printf(" TODO: OutputGate"); }
 };
+
 class NegGate : public BaseComponent {
 public:
   NegGate(string name = "input", array<int32_t, 2> position = {0, 0},
           vector<Packet> inputs = {}, vector<Port> output_targets = {})
-      : BaseComponent() {}
+      : BaseComponent(name, position, inputs, output_targets) {}
 
   void update_outputs() override { printf(" TODO: NegGate"); }
+};
+
+class AddGate : public BaseComponent {
+public:
+  AddGate(string name = "input", array<int32_t, 2> position = {0, 0},
+          vector<Packet> inputs = {}, vector<Port> output_targets = {})
+      : BaseComponent(name, position, inputs, output_targets) {}
+
+  void update_outputs() override { printf(" TODO: AddGate"); }
 };

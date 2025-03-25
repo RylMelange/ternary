@@ -1,9 +1,6 @@
-#include "gates.h"
+#include "gates.hpp"
 #include "raylib.h"
-#include <array>
-#include <iostream>
-#include <memory>
-#include <vector>
+#include <cstdio>
 using namespace std;
 
 // define stuff
@@ -37,7 +34,6 @@ void DrawComponent(BaseComponent &component) {
   return;
 };
 
-// code from the chatjimminy :(((((
 void printCircuit(
     const unordered_map<int32_t, unique_ptr<BaseComponent>> &circuit) {
   cout << "---------" << endl;
@@ -76,10 +72,10 @@ int main(int argc, char **argv) {
                                    vector<Packet>{1, 1, 1},
                                    vector<Port>{{1, 0}, {2, 0}, {-1, 0}})});
     circuit.insert(
-        {1, make_unique<BaseComponent>( "negate", array<int32_t, 2>{200, 200},
+        {1, make_unique<NegGate>( "negate", array<int32_t, 2>{200, 200},
                                        vector<Packet>{0, -1},
                                        vector<Port>{{2, 1}, {-1, 2}} )});
-    circuit.insert({2, make_unique<BaseComponent>(
+    circuit.insert({2, make_unique<AddGate>(
                            "add", array<int32_t, 2>{300, 300},
                            vector<Packet>{0, 0}, vector<Port>{{-1, 1}})});
     circuit.insert(
@@ -97,15 +93,14 @@ int main(int argc, char **argv) {
   // Main game loop
   while (!WindowShouldClose()) { // Detect window close button or ESC key
     // Update
-    if (DEBUG) {
-      printCircuit(circuit);
-    };
-
     // TODO: check keypresses: add,remove components interactively, save circuit
     // to file
 
     // Updating components & ports
     for (int i = 0; i < IPF; i++) {
+      if (DEBUG) {
+        printCircuit(circuit);
+      };
       for (auto i : components_to_update) {
         if (DEBUG) {
           cout << "---------" << endl;
@@ -114,7 +109,11 @@ int main(int argc, char **argv) {
         circuit[i]->update_outputs();
       }
       components_to_update.clear();
+
       for (auto i : ports_to_update) {
+        if (DEBUG) {
+          printf("updating port: %d,%d\n",i.port[0],i.port[1]);
+        }
         components_to_update.insert(i.port[0]);
         circuit[i.port[0]]->inputs[i.port[1]] = i.value;
       }

@@ -1,13 +1,15 @@
 [
   {
     "arguments": [
-      "/nix/store/gj9lra51hwhxnhz05jqk5lh03wipamv0-gcc-wrapper-14-20241116/bin/g++",
+      "/nix/store/8v6k283dpbc0qkdq81nb6mrxrgcb10i1-gcc-wrapper-14-20241116/bin/g++",
       "-c",
-      "-I",
-      "./external/raylib-5.5/src/",
-      "src/main.cpp"
+      "-I./external/raylib-5.5/src/",
+      "-o",
+      "./build/out",
+      "./src/main.cpp"
     ],
     "directory": "/home/friday/projects/ternary",
-    "file": "/home/friday/projects/ternary/src/main.cpp"
+    "file": "/home/friday/projects/ternary/src/main.cpp",
+    "output": "/home/friday/projects/ternary/build/out"
   }
 ]
