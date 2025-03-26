@@ -9,7 +9,7 @@ wget https://github.com/raysan5/raylib/archive/refs/tags/5.5.tar.gz -P external/
 tar xvf external/5.5.tar.gz -C external/
 ```
 
-2. You need some dependencies. For Nix, it's the following shell.nix(included), and run `nix-shell`. For others, it's just the list within packages = [...]
+2. You need some dependencies. For Nix, it's the following shell.nix(included), and run `nix-shell`. For others, it's just the list within nativeBuildInputs = [...]
 ```nix
 { pkgs ? import <nixpkgs> {} }:
 
