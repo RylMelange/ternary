@@ -1,5 +1,6 @@
-#include "gates.hpp"
 #include "functions.hpp"
+#include "gates.hpp"
+#include "raylib.h"
 using namespace std;
 
 // define stuff (code from tsoding)
@@ -23,7 +24,7 @@ int main(int argc, char **argv) {
     // TODO: add handling of external files
     // accept input of name of external file, import them as the input circuit
     const char *command_name = shift(argv, argc);
-    cout << "---------" << endl;
+    printf("---------\n");
     printf("AAAAAAAA what on earth does '%s' mean???\n", command_name);
     return -1;
   } else {
@@ -54,7 +55,7 @@ int main(int argc, char **argv) {
 
       for (auto i : components_to_update) {
         if (DEBUG) {
-          cout << "---------" << endl;
+          printf("---------\n");
           printf("updating component: %d\n", i);
         }
         circuit[i]->update_outputs();
@@ -80,6 +81,7 @@ int main(int argc, char **argv) {
     for (auto &i : circuit) {
       i.second->draw_component();
     }
+
     EndDrawing();
   }
 

@@ -1,0 +1,17 @@
+RAYLIB ?= ./external/raylib-5.5/src/
+OBJS = ./src/main.o ./src/functions.o
+CFLAGS = -O2 -MD
+LDFLAGS = -I $(RAYLIB) -L $(RAYLIB) -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+
+%.o: %.cpp
+	g++ $(CFLAGS) -o $@ -c $<
+
+out.elf: $(OBJS)
+	g++ -o $@ $(OBJS) $(LDFLAGS)
+
+
+clean:
+	rm -f *.o
+	rm -f *.d
+
+-include $(OBJS:.o=.d)

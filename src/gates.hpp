@@ -37,7 +37,8 @@ public:
     // draw the component as a rectangle, with width and height and colour
     // depending on gate type
 
-    DrawRectangle(position.x, position.y, 100, 100, RAYWHITE);
+    // DrawRectangle(position.x, position.y, 100, 100, RAYWHITE);
+    DrawRectangleV(position, Vector2 {100,100}, RAYWHITE);
 
     // TODO: draw the ports along with colour
     // draw ports for each component - ins and outs
