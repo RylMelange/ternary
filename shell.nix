@@ -2,11 +2,11 @@
 { pkgs ? import <nixpkgs> {} }:
 
 pkgs.mkShell {
-  buildInputs = with pkgs; [
-    gcc
-    gnumake
-    cmake
-    raylib
+  buildInputs = [
+    pkgs.gcc
+    pkgs.gnumake
+    pkgs.cmake
+    pkgs.raylib
     
     # pkgs.libGL
     #

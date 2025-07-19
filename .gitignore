@@ -1,3 +1,4 @@
 out
 external/
 .cache/
+.direnv/
