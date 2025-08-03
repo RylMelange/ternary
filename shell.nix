@@ -2,7 +2,8 @@
 { pkgs ? import <nixpkgs> {} }:
 
 pkgs.mkShell {
-  buildInputs = [
+  # buildInputs = [
+  packages = [
     pkgs.gcc
     pkgs.gnumake
     pkgs.cmake
