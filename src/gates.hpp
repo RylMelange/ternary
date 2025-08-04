@@ -15,13 +15,14 @@ extern vector<UpdatePort> ports_to_update;
 
 class BaseComponent {
 public:
-  BaseComponent(string name = "base component", Vector2 position = {0, 0},
+  BaseComponent(string name = "base component", Vector2 position = {0, 0}, Vector2 size = {100,100},
                 vector<Packet> inputs = {}, vector<Port> output_targets = {})
-      : name(name), position(position), inputs(inputs),
+      : name(name), position(position), size(size), inputs(inputs),
         output_targets(output_targets) {}
 
   string name;
   Vector2 position;
+  Vector2 size;
 
   vector<Packet> inputs;
   vector<Port> output_targets;
@@ -37,8 +38,7 @@ public:
     // draw the component as a rectangle, with width and height and colour
     // depending on gate type
 
-    // DrawRectangle(position.x, position.y, 100, 100, RAYWHITE);
-    DrawRectangleV(position, Vector2 {100,100}, RAYWHITE);
+    DrawRectangleV(position, size, RAYWHITE);
 
     // TODO: draw the ports along with colour
     // draw ports for each component - ins and outs
@@ -51,6 +51,7 @@ public:
   virtual void print_component() {
     printf("%s\n", name.c_str());
     printf("  Position: [ %.1f, %.1f ]\n", position.x, position.y);
+    printf("  Size: [ %.1f, %.1f ]\n", size.x, size.y);
     printf("  Inputs:   ");
     for (const auto &input : inputs) {
       printf("%d, ", input);
@@ -65,9 +66,9 @@ public:
 
 class InputGate : public BaseComponent {
 public:
-  InputGate(string name = "input", Vector2 position = {0, 0},
+  InputGate(string name = "input", Vector2 position = {0, 0}, Vector2 size = {100,100},
             vector<Packet> inputs = {}, vector<Port> output_targets = {})
-      : BaseComponent(name, position, inputs, output_targets) {}
+      : BaseComponent(name, position, size, inputs, output_targets) {}
 
   void update_outputs() override {
     for (size_t i = 0; i < inputs.size(); i++) {
@@ -78,9 +79,9 @@ public:
 
 class OutputGate : public BaseComponent {
 public:
-  OutputGate(string name = "input", Vector2 position = {0, 0},
+  OutputGate(string name = "input", Vector2 position = {0, 0}, Vector2 size = {100,100},
              vector<Packet> inputs = {}, vector<Port> output_targets = {})
-      : BaseComponent(name, position, inputs, output_targets) {}
+      : BaseComponent(name, position, size, inputs, output_targets) {}
 
   void update_outputs() override {
     for (size_t i = 0; i < inputs.size(); i++) {
@@ -91,9 +92,9 @@ public:
 
 class SplitGate : public BaseComponent {
 public:
-  SplitGate(string name = "split", Vector2 position = {0, 0},
+  SplitGate(string name = "split", Vector2 position = {0, 0}, Vector2 size = {100,100},
             vector<Packet> inputs = {0}, vector<Port> output_targets = {})
-      : BaseComponent(name, position, inputs, output_targets) {}
+      : BaseComponent(name, position, size, inputs, output_targets) {}
 
   void update_outputs() override {
     for (size_t i = 0; i < output_targets.size(); i++) {
@@ -104,9 +105,9 @@ public:
 
 class NegGate : public BaseComponent {
 public:
-  NegGate(string name = "input", Vector2 position = {0, 0},
+  NegGate(string name = "input", Vector2 position = {0, 0}, Vector2 size = {100,100},
           vector<Packet> inputs = {}, vector<Port> output_targets = {})
-      : BaseComponent(name, position, inputs, output_targets) {}
+      : BaseComponent(name, position, size, inputs, output_targets) {}
 
   void update_outputs() override {
     for (size_t i = 0; i < inputs.size(); i++) {
@@ -118,9 +119,9 @@ public:
 
 class AddGate : public BaseComponent {
 public:
-  AddGate(string name = "input", Vector2 position = {0, 0},
+  AddGate(string name = "input", Vector2 position = {0, 0}, Vector2 size = {100,100},
           vector<Packet> inputs = {}, vector<Port> output_targets = {})
-      : BaseComponent(name, position, inputs, output_targets) {}
+      : BaseComponent(name, position, size, inputs, output_targets) {}
 
   void update_outputs() override {
     ports_to_update.push_back(
@@ -131,9 +132,9 @@ public:
 
 class MaxGate : public BaseComponent {
 public:
-  MaxGate(string name = "input", Vector2 position = {0, 0},
+  MaxGate(string name = "input", Vector2 position = {0, 0}, Vector2 size = {100,100},
           vector<Packet> inputs = {}, vector<Port> output_targets = {})
-      : BaseComponent(name, position, inputs, output_targets) {}
+      : BaseComponent(name, position, size, inputs, output_targets) {}
 
   void update_outputs() override {
     ports_to_update.push_back(
@@ -144,9 +145,9 @@ public:
 
 class MinGate : public BaseComponent {
 public:
-  MinGate(string name = "input", Vector2 position = {0, 0},
+  MinGate(string name = "input", Vector2 position = {0, 0}, Vector2 size = {100,100},
           vector<Packet> inputs = {}, vector<Port> output_targets = {})
-      : BaseComponent(name, position, inputs, output_targets) {}
+      : BaseComponent(name, position, size, inputs, output_targets) {}
 
   void update_outputs() override {
     ports_to_update.push_back(
