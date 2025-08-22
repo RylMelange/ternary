@@ -10,7 +10,7 @@ using namespace std;
 #define FPS 1
 #define IPF 2 // iterations per frame
 
-bool DEBUG = 1;
+bool DEBUG_TERNARY = 1;
 
 // main stuff
 unordered_map<int32_t, unique_ptr<BaseComponent>> circuit;
@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
 
     // Updating components & ports
     for (int i = 0; i < IPF; i++) {
-      if (DEBUG) {
+      if (DEBUG_TERNARY) {
         printf("---------\n");
         for (const auto &[key, component] : circuit) {
           printf("%d: ", key);
@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
       };
 
       for (auto i : components_to_update) {
-        if (DEBUG) {
+        if (DEBUG_TERNARY) {
           printf("---------\n");
           printf("updating component: %d\n", i);
         }
@@ -63,7 +63,7 @@ int main(int argc, char **argv) {
       components_to_update.clear();
 
       for (auto i : ports_to_update) {
-        if (DEBUG) {
+        if (DEBUG_TERNARY) {
           printf("updating port: %d,%d\n", i.port[0], i.port[1]);
         }
         components_to_update.insert(i.port[0]);
@@ -75,7 +75,7 @@ int main(int argc, char **argv) {
     // Draw
     BeginDrawing();
     ClearBackground(DARKBLUE);
-    if (DEBUG) {
+    if (DEBUG_TERNARY) {
       printf("---------\nDrawing components!\n");
     };
     for (auto &i : circuit) {

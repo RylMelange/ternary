@@ -1,11 +1,13 @@
+# https://gist.github.com/gabrieldlima/0bf82c01ce54976ffc6f900639c36f51
 { pkgs ? import <nixpkgs> {} }:
 
 pkgs.mkShell {
-  buildInputs = with pkgs; [
-    gcc
-    gnumake
-    cmake
-    # raylib
+  # buildInputs = [
+  packages = [
+    # pkgs.gcc
+    # pkgs.gnumake
+    # pkgs.cmake
+    # pkgs.raylib
     
     pkgs.libGL
 
@@ -21,8 +23,8 @@ pkgs.mkShell {
     # pkgs.emscripten
   ];
 
-  shellHook = ''
-    nvim ./src/main.cpp && exit
-  '';
+  # shellHook = ''
+  #   nvim ./src/main.cpp && exit
+  # '';
   # do nix-shell -p bear && bear -- make to obtain the ./compile_commands.json
 }
